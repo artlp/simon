@@ -10,19 +10,23 @@ function start() {
     if (gameStarted === false) {
         nextSequence();
         $("#level-title").text("Your current level is " + level);
+        gameStarted = true;
     } else {
         // console.log("DICK");
-}
+    }
 }
 $(document).keypress(start);
 
 function nextSequence() {
     // randomNumber = Math.floor(Math.random() * 4);
+    userClickedPattern = [];
+    level++;
     randomNumber = Math.floor(Math.random() * 4);
     let randomChosenColor = buttonColors[randomNumber];
     console.log(randomNumber, randomChosenColor);
     gamePattern.push(randomChosenColor);
     console.log(gamePattern);
+
     $('#' + randomChosenColor).fadeOut(200).fadeIn(200);
     // ! MANUALLY ASSIGNING SOUNDS LIKE A NOOB
     // let audioBlue = new Audio("sounds/blue.mp3");
@@ -42,26 +46,24 @@ function nextSequence() {
     // let sound = new Audio("sounds/"+randomChosenColor+".mp3");
     // sound.play();
     playSound(randomChosenColor);
-    level++;
     $("#level-title").text("Your current level is " + level);
-    gameStarted = true;
+    // gameStarted = true;
 
 };
 
 $(".btn").on("click", function (event) {
     if (gameStarted === true) {
-    userChosenColor = event.target.id;
-    // $(this).fadeOut(200).fadeIn(200);
-    userClickedPattern.push(userChosenColor);
-    console.log(userClickedPattern);
-    animatePress();
-    // let clickedSound = new Audio ("/sounds/"+userChosenColor+".mp3");
-    // clickedSound.play();
-    playSound(userChosenColor);
-    checkResult();
-    nextSequence();}
+        userChosenColor = event.target.id;
+        // $(this).fadeOut(200).fadeIn(200);
+        userClickedPattern.push(userChosenColor);
+        console.log(userClickedPattern);
+        animatePress();
+        // let clickedSound = new Audio ("/sounds/"+userChosenColor+".mp3");
+        // clickedSound.play();
+        playSound(userChosenColor);
+        checkAnswer(userClickedPattern.length - 1); // ! WTF
+    };
 });
-
 function playSound(color) {
     let sound = new Audio("sounds/" + color + ".mp3");
     sound.play();
@@ -73,10 +75,38 @@ function animatePress() {
         $("." + userChosenColor).removeClass("pressed")
     }, 200);
 }
-function checkResult() {
-if (gamePattern === userClickedPattern) {
-    alert("YOU LOST") }
-    else {
-        
+
+function checkAnswer(currentLevel) {
+    let wrongAnswer = new Audio("sounds/wrong.mp3");
+    //3. Write an if statement inside checkAnswer() to check if the most recent user answer is the same as the game pattern. If so then log "success", otherwise log "wrong".
+    if (gamePattern[currentLevel] === userClickedPattern[currentLevel]) {
+
+        console.log("success");
+
+        //4. If the user got the most recent answer right in step 3, then check that they have finished their sequence with another if statement.
+        if (userClickedPattern.length === gamePattern.length) {
+
+            //5. Call nextSequence() after a 1000 millisecond delay.
+            setTimeout(nextSequence, 1000);
+
+        }
+
+    } else {
+
+        console.log("wrong");
+        wrongAnswer.play();
+        $("body").addClass("game-over");
+        setTimeout(function () { $("body").removeClass("game-over") }, 300);
+        $("#level-title").text("You lost on level " + level + "! Press any key to restart");
+        document.querySelector("body").addEventListener("keypress", startOver);
     }
+};
+function startOver() {
+    level = 0;
+    gamePattern = [];
+    userClickedPattern = [];
+    console.log("RESTART");
+    document.querySelector("body").removeEventListener("keypress", startOver);
+    nextSequence();
+
 }
