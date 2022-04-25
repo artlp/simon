@@ -46,7 +46,7 @@ function nextSequence() {
     // let sound = new Audio("sounds/"+randomChosenColor+".mp3");
     // sound.play();
     playSound(randomChosenColor);
-    $("#level-title").text("Your current level is " + level);
+    $("#level-title").text("Level " + level);
     // gameStarted = true;
 
 };
@@ -81,7 +81,7 @@ function checkAnswer(currentLevel) {
     //3. Write an if statement inside checkAnswer() to check if the most recent user answer is the same as the game pattern. If so then log "success", otherwise log "wrong".
     if (gamePattern[currentLevel] === userClickedPattern[currentLevel]) {
 
-        console.log("success");
+        // console.log("success");
 
         //4. If the user got the most recent answer right in step 3, then check that they have finished their sequence with another if statement.
         if (userClickedPattern.length === gamePattern.length) {
@@ -93,7 +93,7 @@ function checkAnswer(currentLevel) {
 
     } else {
 
-        console.log("wrong");
+        // console.log("wrong");
         wrongAnswer.play();
         $("body").addClass("game-over");
         setTimeout(function () { $("body").removeClass("game-over") }, 300);
@@ -105,7 +105,7 @@ function startOver() {
     level = 0;
     gamePattern = [];
     userClickedPattern = [];
-    console.log("RESTART");
+    // console.log("RESTART");
     document.querySelector("body").removeEventListener("keypress", startOver);
     nextSequence();
 
